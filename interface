@@ -3,34 +3,50 @@ from ABB import SGBD, Registro
 
 sgbd = SGBD()
 
+# Funções
 def inserir():
-    cpf = entry_cpf.get()
-    nome = entry_nome.get()
-    data = entry_data.get()
+    cpf = entry_cpf.get().strip()
+    nome = entry_nome.get().strip()
+    data = entry_data.get().strip()
     if cpf and nome and data:
         sgbd.inserir_registro(Registro(cpf, nome, data))
+        status.set("Registro inserido com sucesso!")
         atualizar_lista()
         limpar_campos()
+    else:
+        status.set("Preencha todos os campos para inserir.")
 
 def remover():
-    cpf = entry_cpf.get()
+    cpf = entry_cpf.get().strip()
     if cpf:
         sgbd.remover_registro(cpf)
+        status.set("Registro removido (marcado como excluído).")
         atualizar_lista()
         limpar_campos()
+    else:
+        status.set("Digite o CPF para remover.")
 
 def buscar():
-    cpf = entry_cpf.get()
+    cpf = entry_busca.get().strip()
     reg = sgbd.buscar_por_cpf(cpf)
     if reg:
         resultado_busca.set(f"{reg}")
+        entry_cpf.delete(0, tk.END)
+        entry_nome.delete(0, tk.END)
+        entry_data.delete(0, tk.END)
+        entry_cpf.insert(0, reg.cpf)
+        entry_nome.insert(0, reg.nome)
+        entry_data.insert(0, reg.data_nascimento)
+        status.set("Registro encontrado.")
     else:
         resultado_busca.set("Registro não encontrado ou excluído.")
+        status.set("CPF não encontrado ou já está excluído.")
 
 def mostrar_edl_ordenada():
     listbox.delete(0, tk.END)
     for reg in sgbd.gerar_edl_ordenada():
         listbox.insert(tk.END, str(reg))
+    status.set("EDL ordenada exibida.")
 
 def limpar_campos():
     entry_cpf.delete(0, tk.END)
@@ -48,39 +64,85 @@ def mostrar_percursos():
     percursos.insert(tk.END, f"Pré-Ordem: {sgbd.indice_cpf.pre_ordem()}")
     percursos.insert(tk.END, f"Pós-Ordem: {sgbd.indice_cpf.pos_ordem()}")
     percursos.insert(tk.END, f"Em Largura: {sgbd.indice_cpf.em_largura()}")
+    status.set("Percursos da árvore exibidos.")
+
+def selecionar_registro(event):
+    try:
+        idx = listbox.curselection()[0]
+        linha = listbox.get(idx)
+        cpf = linha.split(" - ")[0].replace("CPF: ","").strip()
+        reg = sgbd.buscar_por_cpf(cpf)
+        if reg:
+            entry_cpf.delete(0, tk.END)
+            entry_nome.delete(0, tk.END)
+            entry_data.delete(0, tk.END)
+            entry_cpf.insert(0, reg.cpf)
+            entry_nome.insert(0, reg.nome)
+            entry_data.insert(0, reg.data_nascimento)
+    except IndexError:
+        pass
 
 # Interface
 root = tk.Tk()
 root.title("Sistema ABB")
+root.resizable(False, False)
 
-tk.Label(root, text="CPF:").grid(row=0, column=0)
-entry_cpf = tk.Entry(root)
+# Centralizar janela
+root.eval('tk::PlaceWindow . center')
+
+# Frames
+frame_dados = tk.LabelFrame(root, text="Cadastro de Registro", padx=10, pady=10)
+frame_dados.grid(row=0, column=0, padx=10, pady=5, sticky="ew", columnspan=3)
+
+frame_busca = tk.LabelFrame(root, text="Buscar por CPF", padx=10, pady=10)
+frame_busca.grid(row=1, column=0, padx=10, pady=5, sticky="ew", columnspan=3)
+
+frame_lista = tk.LabelFrame(root, text="Registros/CPFs", padx=10, pady=10)
+frame_lista.grid(row=2, column=0, padx=10, pady=5, sticky="ew", columnspan=3)
+
+frame_percurso = tk.LabelFrame(root, text="Percursos da Árvore de Índice", padx=10, pady=10)
+frame_percurso.grid(row=3, column=0, padx=10, pady=5, sticky="ew", columnspan=3)
+
+# Cadastro
+tk.Label(frame_dados, text="CPF:").grid(row=0, column=0, sticky='e')
+entry_cpf = tk.Entry(frame_dados, width=20)
 entry_cpf.grid(row=0, column=1)
 
-tk.Label(root, text="Nome:").grid(row=1, column=0)
-entry_nome = tk.Entry(root)
+tk.Label(frame_dados, text="Nome:").grid(row=1, column=0, sticky='e')
+entry_nome = tk.Entry(frame_dados, width=20)
 entry_nome.grid(row=1, column=1)
 
-tk.Label(root, text="Data Nasc.:").grid(row=2, column=0)
-entry_data = tk.Entry(root)
+tk.Label(frame_dados, text="Data Nasc.:").grid(row=2, column=0, sticky='e')
+entry_data = tk.Entry(frame_dados, width=20)
 entry_data.grid(row=2, column=1)
 
-tk.Button(root, text="Inserir", command=inserir).grid(row=3, column=0)
-tk.Button(root, text="Remover", command=remover).grid(row=3, column=1)
-tk.Button(root, text="Buscar", command=buscar).grid(row=3, column=2)
-tk.Button(root, text="EDL Ordenada", command=mostrar_edl_ordenada).grid(row=4, column=0)
-tk.Button(root, text="Mostrar Percursos", command=mostrar_percursos).grid(row=4, column=1)
+tk.Button(frame_dados, text="Inserir", command=inserir, bg="#4CAF50", fg="white", width=10).grid(row=0, column=2, rowspan=2, padx=5, pady=2)
+tk.Button(frame_dados, text="Remover", command=remover, bg="#f44336", fg="white", width=10).grid(row=2, column=2, padx=5, pady=2)
 
+# Busca
+entry_busca = tk.Entry(frame_busca, width=20)
+entry_busca.grid(row=0, column=0)
+tk.Button(frame_busca, text="Buscar", command=buscar, width=10).grid(row=0, column=1, padx=5)
 resultado_busca = tk.StringVar()
-tk.Label(root, textvariable=resultado_busca, fg="blue").grid(row=5, column=0, columnspan=3)
+tk.Label(frame_busca, textvariable=resultado_busca, fg="blue").grid(row=1, column=0, columnspan=2)
 
-tk.Label(root, text="Registros/CPFs:").grid(row=6, column=0, columnspan=3)
-listbox = tk.Listbox(root, width=55)
-listbox.grid(row=7, column=0, columnspan=3)
+# Lista de registros
+listbox = tk.Listbox(frame_lista, width=55, height=8)
+listbox.grid(row=0, column=0, columnspan=4)
+listbox.bind('<<ListboxSelect>>', selecionar_registro)
 
-tk.Label(root, text="Percursos da Árvore de Índice:").grid(row=8, column=0, columnspan=3)
-percursos = tk.Listbox(root, width=55, height=4)
-percursos.grid(row=9, column=0, columnspan=3)
+tk.Button(frame_lista, text="Atualizar Lista", command=atualizar_lista, width=14).grid(row=1, column=0, pady=3)
+tk.Button(frame_lista, text="EDL Ordenada", command=mostrar_edl_ordenada, width=14).grid(row=1, column=1, pady=3)
+tk.Button(frame_lista, text="Limpar Campos", command=limpar_campos, width=14).grid(row=1, column=2, pady=3)
+
+# Percursos
+percursos = tk.Listbox(frame_percurso, width=55, height=4)
+percursos.grid(row=0, column=0, columnspan=3)
+tk.Button(frame_percurso, text="Mostrar Percursos", command=mostrar_percursos, width=20).grid(row=1, column=0, pady=3)
+
+# Status
+status = tk.StringVar()
+tk.Label(root, textvariable=status, fg="purple").grid(row=5, column=0, columnspan=3, sticky='w')
 
 atualizar_lista()
 root.mainloop()
