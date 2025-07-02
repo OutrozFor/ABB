@@ -166,7 +166,7 @@ class SGBD:
         return [self.edl[i] for i in indices_ordenados if not self.edl[i].deletado]
 
     def salvar (self, arquivo="dados_abb.pkl"):
-        with open(arquivo, "wb") as f
+        with open(arquivo, "wb") as f:
             pickle.dump(self.edl, f)
 
     def carregar(self, arquivo="dados_abb.pkl"):
