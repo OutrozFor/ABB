@@ -164,8 +164,9 @@ class SGBD:
         """Gera nova EDL ordenada usando percurso em ordem"""
         indices_ordenados = self.indice_cpf.em_ordem()
         return [self.edl[i] for i in indices_ordenados if not self.edl[i].deletado]
-
+        
     def salvar (self, arquivo="dados_abb.pkl"):
+        """salva os dados em arquivo pickle"""
         with open(arquivo, "wb") as f:
             pickle.dump(self.edl, f)
 
