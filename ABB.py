@@ -194,7 +194,7 @@ if __name__ == "__main__":
     sgbd.inserir_registro(Registro("22222222222", "Carlos Oliveira", "2000-11-30"))
     sgbd.inserir_registro(Registro("88888888888", "Ana Terra", "1999-04-03"))
     sgbd.inserir_registro(Registro("55555555555", "Vitoria Araujo", "2005-08-12"))
-    sgbd.inserir_registro(Registro("7777777777", "Julia Castelo" , "2008-05-25"))
+    sgbd.inserir_registro(Registro("77777777777", "Julia Castelo" , "2008-05-25"))
 
     # Buscar registro
     print("\nBusca por CPF:")
