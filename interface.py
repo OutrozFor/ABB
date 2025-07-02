@@ -32,6 +32,8 @@ class Application(tk.Tk):
         self.btn_buscar.pack(pady=5)
         self.btn_remover = tk.Button(self, text="Remover", command=self.remover)
         self.btn_remover.pack(pady=5)
+        self.btn_listar = tk.Button(self, text="Listar Todos", command=self.listar_todos)
+        self.btn_listar.pack(pady=5)
 
         # Resultado
         self.txt_result = tk.Text(self, height=6, width=45)
@@ -85,6 +87,15 @@ class Application(tk.Tk):
         self.ent_nome.delete(0, tk.END)
         self.ent_data.delete(0, tk.END)
         self.txt_result.delete("1.0", tk.END)
+
+    def listar_todos(self):
+    self.txt_result.delete("1.0", tk.END)
+    registros = self.sgbd.gerar_edl_ordenada()
+    if not registros:
+        self.txt_result.insert(tk.END, "Nenhum registro encontrado.")
+    else:
+        for registro in registros:
+            self.txt_result.insert(tk.END, str(registro) + "\n")
 
 if __name__ == "__main__":
     sgbd = SGBD()
