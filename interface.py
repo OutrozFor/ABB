@@ -7,7 +7,7 @@ class Application(tk.Tk):
         super().__init__()
         self.sgbd = sgbd
         self.title("Banco de Dados ABB")
-        self.geometry("500x400")
+        self.geometry("600x700")
         
         # Labels e Entradas
         self.lbl_cpf = tk.Label(self, text="CPF (11 dígitos):")
@@ -36,7 +36,7 @@ class Application(tk.Tk):
         self.btn_listar.pack(pady=5)
 
         # Resultado
-        self.txt_result = tk.Text(self, height=6, width=45)
+        self.txt_result = tk.Text(self, height=20, width=65)
         self.txt_result.pack(pady=10)
 
     def inserir(self):
