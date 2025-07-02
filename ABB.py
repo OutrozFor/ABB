@@ -1,3 +1,5 @@
+import pickle
+
 class Registro:
     def __init__(self, cpf: str, nome: str, data_nascimento: str):
         self.cpf = cpf
@@ -162,6 +164,20 @@ class SGBD:
         """Gera nova EDL ordenada usando percurso em ordem"""
         indices_ordenados = self.indice_cpf.em_ordem()
         return [self.edl[i] for i in indices_ordenados if not self.edl[i].deletado]
+
+    def salvar (self, arquivo="dados_abb.pkl"):
+        with open(arquivo, "wb") as f
+            pickle.dump(self.edl, f)
+
+    def carregar(self, arquivo="dados_abb.pkl"):
+        try:
+            with open(arquivo, "rb") as f:
+                self.edl = pickle.load(f)
+            # Reconstrói o índice a partir da EDL carregada
+            self.indice_cpf = ABB(self.edl)
+        except FileNotFoundError:
+            self.edl = []
+            self.indice_cpf = ABB()
 
 # Exemplo de uso
 if __name__ == "__main__":
