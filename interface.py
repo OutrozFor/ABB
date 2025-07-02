@@ -88,5 +88,7 @@ class Application(tk.Tk):
 
 if __name__ == "__main__":
     sgbd = SGBD()
+    sgbd.carregar()  # Carrega ao iniciar
     app = Application(sgbd)
     app.mainloop()
+    sgbd.salvar()    # Salva ao fechar (após o mainloop)
