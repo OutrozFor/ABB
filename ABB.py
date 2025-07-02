@@ -141,6 +141,9 @@ class SGBD:
     
     def inserir_registro(self, registro: Registro) -> int:
         """Insere registro na EDL e atualiza índice"""
+        if self.indice_cpf.buscar(registro.cpf) != -1:
+            print(f"Erro: CPF {registro.cpf} já cadastrado!")
+            return -1  # Ou outro valor/sinalização de erro
         indice = len(self.edl)
         self.edl.append(registro)
         self.indice_cpf.inserir(registro.cpf, indice)
