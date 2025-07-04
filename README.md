@@ -1,6 +1,7 @@
 SGBD com Árvore Binária de Busca (ABB)
 
 Este projeto é um SGBD simples escrito em Python, que armazena registros de pessoas (CPF, nome e data de nascimento) em uma estrutura linear e utiliza uma Árvore Binária de Busca (ABB) para indexação, busca e remoção eficiente pelo CPF.
+
 Funcionalidades:
 
 - Inserção de registros: Adiciona novos registros e os indexa pelo CPF.
