@@ -14,5 +14,7 @@ Funcionalidades:
 Estruturas principais
 
 Registro: Representa cada pessoa armazenada (CPF, nome, data de nascimento, flag de deletado).
+
 ABB e NoABB: Implementam a árvore binária de busca para indexação dos registros pelo CPF.
+
 SGBD: Gerencia a estrutura de dados linear (EDL), a árvore de índice e as operações de inserir, remover, buscar, listar e persistir registros.
